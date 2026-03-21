@@ -1,0 +1,178 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import { getCollection, render } from 'astro:content';
+
+export async function getStaticPaths() {
+  const posts = await getCollection('posts');
+  return posts.map(post => ({
+    params: { id: post.id },
+    props: { post },
+  }));
+}
+
+const { post } = Astro.props;
+const { Content } = await render(post);
+
+function formatDate(date: Date) {
+  return date.toISOString().slice(0, 10);
+}
+---
+<BaseLayout title={`${post.data.title} — shannanji`}>
+<style>
+  .container { max-width: 1100px; margin: 0 auto; width: 100%; }
+
+  nav {
+    display: flex; justify-content: space-between; align-items: center;
+    padding: 28px 48px; border-bottom: 1px solid #e8e6e0;
+  }
+  .logo { font-size: 13px; color: #999; letter-spacing: 0.12em; text-decoration: none; }
+  .logo span { color: #3d7a56; }
+  .nav-links { display: flex; gap: 36px; list-style: none; }
+  .nav-links a { font-size: 12px; color: #aaa; letter-spacing: 0.08em; text-decoration: none; transition: color 0.2s; }
+  .nav-links a:hover { color: #2a2a28; }
+
+  .post-header { padding: 52px 48px 36px; max-width: 780px; }
+
+  .post-meta-top {
+    display: flex; gap: 16px; align-items: center;
+    margin-bottom: 20px;
+  }
+  .post-date { font-size: 11px; color: #c0bdb8; letter-spacing: 0.08em; }
+  .post-tag {
+    font-size: 10px; color: #3d7a56; letter-spacing: 0.1em;
+    border: 1px solid #d0e8da; padding: 2px 8px; border-radius: 2px;
+  }
+
+  .post-title {
+    font-family: 'LXGW WenKai', 'Noto Serif SC', serif;
+    font-size: 32px; font-weight: 400; color: #1a1a18;
+    line-height: 1.4; margin-bottom: 10px;
+  }
+  .post-subtitle {
+    font-family: 'LXGW WenKai', 'Noto Serif SC', serif;
+    font-size: 16px; font-weight: 300; color: #999;
+    line-height: 1.6;
+  }
+
+  .post-body {
+    padding: 0 48px 80px;
+    max-width: 780px;
+  }
+
+  .post-body :global(h1),
+  .post-body :global(h2),
+  .post-body :global(h3) {
+    font-family: 'LXGW WenKai', 'Noto Serif SC', serif;
+    font-weight: 400; color: #1a1a18; margin: 2em 0 0.8em;
+  }
+  .post-body :global(h1) { font-size: 24px; }
+  .post-body :global(h2) { font-size: 20px; }
+  .post-body :global(h3) { font-size: 17px; }
+
+  .post-body :global(p) {
+    font-family: 'LXGW WenKai', 'Noto Serif SC', serif;
+    font-size: 16px; color: #3a3a36; line-height: 2;
+    margin-bottom: 1.4em; font-weight: 300;
+  }
+
+  .post-body :global(code) {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 13px; background: #f6f4f0;
+    padding: 2px 6px; border-radius: 3px; color: #3d7a56;
+  }
+
+  .post-body :global(pre) {
+    background: #f6f4f0; padding: 20px 24px;
+    border-radius: 4px; overflow-x: auto; margin: 1.6em 0;
+    border-left: 2px solid #3d7a56;
+  }
+
+  .post-body :global(pre code) {
+    background: none; padding: 0; color: #3a3a36;
+    font-size: 13px; line-height: 1.7;
+  }
+
+  .post-body :global(blockquote) {
+    border-left: 2px solid #e0ddd8; padding-left: 20px;
+    margin: 1.6em 0; color: #888;
+    font-style: italic;
+  }
+
+  .post-body :global(img) {
+    max-width: 100%; border-radius: 4px; margin: 1.6em 0;
+  }
+
+  .post-body :global(a) {
+    color: #3d7a56; text-decoration: underline;
+    text-decoration-color: #c0ddd0;
+  }
+
+  .post-body :global(ul), .post-body :global(ol) {
+    padding-left: 1.5em; margin-bottom: 1.4em;
+  }
+
+  .post-body :global(li) {
+    font-family: 'LXGW WenKai', 'Noto Serif SC', serif;
+    font-size: 16px; color: #3a3a36; line-height: 2; font-weight: 300;
+  }
+
+  .post-body :global(table) {
+    width: 100%; border-collapse: collapse; margin: 1.6em 0;
+    font-size: 14px;
+  }
+
+  .post-body :global(th) {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px; color: #888; letter-spacing: 0.08em;
+    border-bottom: 1px solid #e8e6e0; padding: 8px 12px;
+    text-align: left; font-weight: 400;
+  }
+
+  .post-body :global(td) {
+    padding: 10px 12px; border-bottom: 1px solid #f0ede8;
+    color: #3a3a36; vertical-align: top;
+  }
+
+  .post-nav {
+    padding: 32px 48px; border-top: 1px solid #eeece8;
+  }
+  .back-link {
+    font-size: 12px; color: #aaa; letter-spacing: 0.08em;
+    text-decoration: none; transition: color 0.2s;
+  }
+  .back-link:hover { color: #3d7a56; }
+</style>
+
+<div class="container">
+  <nav>
+    <a href="/" class="logo"><span>/</span> shannanji</a>
+    <ul class="nav-links">
+      <li><a href="/writing">writing</a></li>
+      <li><a href="/notes">notes</a></li>
+      <li><a href="/about">about</a></li>
+      <li><a href="/rss.xml">rss</a></li>
+    </ul>
+  </nav>
+
+  <div class="post-header">
+    <div class="post-meta-top">
+      <span class="post-date">{formatDate(post.data.date)}</span>
+      {post.data.tags && post.data.tags.map((tag: string) => (
+        <span class="post-tag">{tag}</span>
+      ))}
+    </div>
+    <div class="post-title">{post.data.title}</div>
+    {post.data.subtitle && (
+      <div class="post-subtitle">{post.data.subtitle}</div>
+    )}
+  </div>
+
+  <div class="post-body">
+    <Content />
+  </div>
+
+  <div class="post-nav">
+    <a class="back-link" href="/writing">← back to writing</a>
+  </div>
+</div>
+</BaseLayout>
