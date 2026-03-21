@@ -1,0 +1,40 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+---
+<BaseLayout title="notes — shannanji">
+<style>
+  .container { max-width: 1000px; margin: 0 auto; width: 100%; padding: 0 48px; }
+  nav {
+    display: flex; justify-content: space-between; align-items: center;
+    padding: 32px 0; border-bottom: 1px solid #e8e6e0;
+    max-width: 860px; margin: 0 auto;
+  }
+  .logo { font-size: 14px; color: #999; letter-spacing: 0.12em; text-decoration: none; }
+  .logo span { color: #3d7a56; }
+  .nav-links { display: flex; gap: 40px; list-style: none; }
+  .nav-links a { font-size: 13px; color: #aaa; letter-spacing: 0.08em; text-decoration: none; transition: color 0.2s; }
+  .nav-links a:hover { color: #2a2a28; }
+  .nav-links a.active { color: #2a2a28; }
+  .body { max-width: 860px; margin: 0 auto; padding: 64px 0; }
+  .label { font-size: 11px; color: #c0bdb8; letter-spacing: 0.3em; margin-bottom: 24px; }
+  .placeholder {
+    font-family: 'LXGW WenKai', 'Noto Serif SC', serif;
+    font-size: 17px; color: #b0ada8; font-weight: 300; line-height: 2;
+  }
+</style>
+<div class="container">
+  <nav>
+    <a href="/" class="logo"><span>/</span> shannanji</a>
+    <ul class="nav-links">
+      <li><a href="/writing">writing</a></li>
+      <li><a href="/notes" class="active">notes</a></li>
+      <li><a href="/about">about</a></li>
+      <li><a href="/rss.xml">rss</a></li>
+    </ul>
+  </nav>
+  <div class="body">
+    <div class="label">NOTES</div>
+    <div class="placeholder">碎片、摘录、随想。暂未开放，敬请期待。</div>
+  </div>
+</div>
+</BaseLayout>
