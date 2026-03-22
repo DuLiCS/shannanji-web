@@ -1,5 +1,5 @@
 ---
-title: 《The Nature of Computation》
+title: 《The Nature of Computation》《计算的本质》阅读
 subtitle: 2.1 Problems and Solutions
 date: 2025-01-31
 tags: [读书]

@@ -1,5 +1,5 @@
 ---
-title: 《The Nature of Computation》
+title: 《The Nature of Computation》《计算的本质》阅读
 subtitle: 2.2 Time Space and Scaling
 date: 2025-02-01
 tags: [读书]

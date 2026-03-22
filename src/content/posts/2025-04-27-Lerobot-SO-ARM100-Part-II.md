@@ -1,5 +1,5 @@
 ---
-title: Lerobot SO-ARM100 Part II
+title: Lerobot SO-ARM100 Part II机械臂调试记录
 subtitle: 软件调试
 date: 2025-04-27
 tags: [Project, Robot]
