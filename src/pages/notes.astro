@@ -1,5 +1,8 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
+import Footer from '../components/Footer.astro';
+import { getCollection } from 'astro:content';
+import BaseLayout from '../layouts/BaseLayout.astro';
 ---
 <BaseLayout title="notes — shannanji">
 <style>
@@ -36,5 +39,6 @@ import BaseLayout from '../layouts/BaseLayout.astro';
     <div class="label">NOTES</div>
     <div class="placeholder">碎片、摘录、随想。暂未开放，敬请期待。</div>
   </div>
+  <Footer />
 </div>
 </BaseLayout>

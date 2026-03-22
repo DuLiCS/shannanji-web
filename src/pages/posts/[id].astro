@@ -1,4 +1,7 @@
 ---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Footer from '../../components/Footer.astro';
+import { getCollection } from 'astro:content';
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import { getCollection, render } from 'astro:content';
 
@@ -147,5 +150,6 @@ function formatDate(date: Date) {
   <div class="post-nav">
     <a class="back-link" href="/writing">← back to writing</a>
   </div>
+  <Footer />
 </div>
 </BaseLayout>
