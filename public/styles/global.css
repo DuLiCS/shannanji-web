@@ -75,7 +75,7 @@ a { color: inherit; text-decoration: none; }
 .writing-title { font-size: 13px; color: var(--text-faint); letter-spacing: 0.2em; text-transform: uppercase; }
 .tag-filters { display: flex; gap: 8px; flex-wrap: wrap; }
 .tag-f {
-  font-size: 11px; color: var(--text-faint); letter-spacing: 0.08em;
+  font-size: 13px; color: var(--text-faint); letter-spacing: 0.08em;
   border: 1px solid var(--border); padding: 5px 12px; border-radius: 2px;
   cursor: pointer; transition: all 0.15s; background: none;
   font-family: inherit;
@@ -91,11 +91,11 @@ a { color: inherit; text-decoration: none; }
   transition: opacity 0.15s;
 }
 .writing-row:hover { opacity: 0.7; }
-.writing-date { font-size: 14px; color: var(--text-faint); letter-spacing: 0.06em; }
+.writing-date { font-size: 15px; color: var(--text-faint); letter-spacing: 0.06em; }
 .writing-center { display: flex; flex-direction: column; gap: 5px; }
 .writing-post-title {
   font-family: 'LXGW WenKai', 'Noto Serif SC', serif;
-  font-size: 20px; font-weight: 400; color: var(--text); line-height: 1.5;
+  font-size: 22px; font-weight: 400; color: var(--text); line-height: 1.5;
 }
-.writing-subtitle { font-size: 14px; color: var(--text-muted); }
-.writing-tag { font-size: 13px; color: var(--accent); letter-spacing: 0.1em; text-align: right; }
+.writing-subtitle { font-size: 15px; color: var(--text-muted); }
+.writing-tag { font-size: 14px; color: var(--accent); letter-spacing: 0.1em; text-align: right; }
