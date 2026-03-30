@@ -107,6 +107,39 @@ function formatDate(date: Date) {
     font-size: 15px; color: var(--text-muted); line-height: 2;
     font-weight: 300;
   }
+
+  @media (max-width: 768px) {
+    .content-grid {
+      grid-template-columns: 1fr;
+      gap: 0;
+      padding: 28px 0;
+    }
+    .side-col {
+      border-left: none;
+      border-top: 1px solid var(--border);
+      padding-top: 28px;
+      gap: 24px;
+    }
+    .post-row {
+      grid-template-columns: 64px 1fr;
+      gap: 10px;
+      padding: 14px 0;
+    }
+    .post-arrow { display: none; }
+    .post-title { font-size: 16px; line-height: 1.6; }
+    .post-date { font-size: 12px; }
+    .hero-title-line2 { font-size: 28px; padding-left: 14px; }
+    nav {
+      display: grid;
+      grid-template-columns: 1fr auto;
+      grid-template-rows: auto auto;
+      gap: 10px;
+    }
+    .logo { grid-column: 1; grid-row: 1; }
+    .nav-right { grid-column: 2; grid-row: 1; }
+    .nav-links { grid-column: 1 / -1; grid-row: 2; gap: 16px; }
+    .nav-links a { font-size: 13px; }
+  }
 </style>
 
 <div class="container">
