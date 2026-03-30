@@ -2,6 +2,27 @@
 import BaseLayout from '../layouts/BaseLayout.astro';
 import Footer from '../components/Footer.astro';
 import { getCollection } from 'astro:content';
+
+const allPosts = await getCollection('posts');
+const recent = allPosts
+  .sort((a, b) => new Date(b.data.date).getTime() - new Date(a.data.date).getTime())
+  .slice(0, 5);
+
+// 统计所有 tags
+const tagCount: Record<string, number> = {};
+for (const post of allPosts) {
+  for (const tag of post.data.tags ?? []) {
+    tagCount[tag] = (tagCount[tag] ?? 0) + 1;
+  }
+}
+const tags = Object.entries(tagCount).sort((a, b) => b[1] - a[1]);
+
+function formatDate(date: Date) {
+  return date.toISOString().slice(0, 7).replace('-', '.');
+}
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Footer from '../components/Footer.astro';
+import { getCollection } from 'astro:content';
 import BaseLayout from '../layouts/BaseLayout.astro';
 import { getCollection } from 'astro:content';
 
@@ -141,18 +162,14 @@ function formatDate(date: Date) {
     </div>
   </div>
 
-  <div class="section">
-    <div class="section-label">TOPICS</div>
-    <div class="category-row">
-      <div class="cat-chip">robotics <span class="count">10</span></div>
-      <div class="cat-chip">philosophy <span class="count">20</span></div>
-      <div class="cat-chip">machine learning <span class="count">20</span></div>
-      <div class="cat-chip">computation <span class="count">7</span></div>
-      <div class="cat-chip">essay <span class="count">15</span></div>
-      <div class="cat-chip">systems <span class="count">8</span></div>
-      <div class="cat-chip">algorithms <span class="count">15</span></div>
-    </div>
+<div class="section">
+  <div class="section-label">TOPICS</div>
+  <div class="category-row">
+    {tags.map(([tag, count]) => (
+      <div class="cat-chip">{tag} <span class="count">{count}</span></div>
+    ))}
   </div>
+</div>
 
   <Footer />
 </div>
