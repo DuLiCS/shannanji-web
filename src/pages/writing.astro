@@ -18,59 +18,15 @@ for (const post of posts) {
 const topTags = Object.entries(tagCount).sort((a, b) => b[1] - a[1]).slice(0, 6).map(([t]) => t);
 
 function formatDate(date: Date) {
-  return date.toISOString().slice(0, 7).replace('-', '.');
+  return date.toISOString().slice(0, 7).replace("-", ".");
 }
 ---
 <BaseLayout title="文章 — 山南记">
-<style>
-  nav {
-    display: flex; justify-content: space-between; align-items: center;
-    padding: 32px 0; border-bottom: 1px solid var(--border);
-  }
-  .logo { font-size: 15px; color: var(--text-muted); letter-spacing: 0.12em; text-decoration: none; }
-  .logo span { color: var(--accent); }
-  .nav-links { display: flex; gap: 40px; list-style: none; }
-  .nav-links a { font-size: 14px; color: var(--text-faint); letter-spacing: 0.08em; text-decoration: none; transition: color 0.2s; }
-  .nav-links a:hover { color: var(--text); }
-  .nav-links a.active { color: var(--text); }
-  .nav-right { display: flex; align-items: center; gap: 20px; }
-
-  .page-header {
-    display: flex; justify-content: space-between; align-items: center;
-    padding: 32px 0 20px; border-bottom: 1px solid var(--border);
-  }
-  .page-title { font-size: 13px; color: var(--text-faint); letter-spacing: 0.2em; text-transform: uppercase; }
-  .tag-filters { display: flex; gap: 8px; flex-wrap: wrap; }
-  .tag-f {
-    font-size: 11px; color: var(--text-faint); letter-spacing: 0.08em;
-    border: 1px solid var(--border); padding: 5px 12px; border-radius: 2px;
-    cursor: pointer; transition: all 0.15s; background: none;
-    font-family: 'JetBrains Mono', monospace;
-  }
-  .tag-f:hover { border-color: var(--accent); color: var(--accent); }
-  .posts-list { display: flex; flex-direction: column; }
-  .post-row {
-    display: grid; grid-template-columns: 100px 1fr 160px;
-    align-items: baseline; gap: 32px; padding: 22px 0;
-    border-bottom: 1px solid var(--border-light); cursor: pointer; text-decoration: none;
-    transition: opacity 0.15s;
-  }
-  .post-row:hover { opacity: 0.7; }
-  .post-date { font-size: 13px; color: var(--text-faint); letter-spacing: 0.06em; }
-  .post-center { display: flex; flex-direction: column; gap: 5px; }
-  .post-title {
-    font-family: 'LXGW WenKai', 'Noto Serif SC', serif;
-    font-size: 18px; font-weight: 400; color: var(--text); line-height: 1.5;
-  }
-  .post-subtitle { font-size: 13px; color: var(--text-muted); }
-  .post-tag { font-size: 12px; color: var(--accent); letter-spacing: 0.1em; text-align: right; }
-</style>
-
 <div class="container">
-  <nav>
-    <a href="/" class="logo"><span>/</span> shannanji</a>
+  <nav class="site-nav">
+    <a href="/" class="nav-logo"><span>/</span> shannanji</a>
     <ul class="nav-links">
-      <li><a href="/writing" class="active">writing</a></li>
+      <li><a href="/writing" class="nav-active">writing</a></li>
       <li><a href="/notes">notes</a></li>
       <li><a href="/about">about</a></li>
       <li><a href="/rss.xml">rss</a></li>
@@ -80,8 +36,8 @@ function formatDate(date: Date) {
     </div>
   </nav>
 
-  <div class="page-header">
-    <div class="page-title">all writing — {sorted.length} posts</div>
+  <div class="writing-header">
+    <div class="writing-title">all writing — {sorted.length} posts</div>
     <div class="tag-filters">
       <button class="tag-f" data-active="true" data-tag="all">all</button>
       {topTags.map(tag => (
@@ -90,19 +46,15 @@ function formatDate(date: Date) {
     </div>
   </div>
 
-  <div class="posts-list">
+  <div class="writing-list">
     {sorted.map(post => (
-      
-        class="post-row"
-        href={`/posts/${post.id}`}
-        data-tags={post.data.tags?.join(",") ?? ""}
-      >
-        <span class="post-date">{formatDate(post.data.date)}</span>
-        <div class="post-center">
-          <div class="post-title">{post.data.title}</div>
-          {post.data.subtitle && <div class="post-subtitle">{post.data.subtitle}</div>}
+      <a class="writing-row" href={"/posts/" + post.id} data-tags={post.data.tags?.join(",") ?? ""}>
+        <span class="writing-date">{formatDate(post.data.date)}</span>
+        <div class="writing-center">
+          <div class="writing-post-title">{post.data.title}</div>
+          {post.data.subtitle && <div class="writing-subtitle">{post.data.subtitle}</div>}
         </div>
-        <div class="post-tag">{post.data.tags?.[0]}</div>
+        <div class="writing-tag">{post.data.tags?.[0]}</div>
       </a>
     ))}
   </div>
@@ -112,12 +64,11 @@ function formatDate(date: Date) {
 
 <script>
   const filters = document.querySelectorAll(".tag-f");
-  const rows = document.querySelectorAll(".post-row");
-
+  const rows = document.querySelectorAll(".writing-row");
   filters.forEach(btn => {
     btn.addEventListener("click", () => {
       const tag = (btn as HTMLElement).dataset.tag || "all";
-      filters.forEach(b => b.classList.remove("is-active"));
+      filters.forEach(b => (b as HTMLElement).removeAttribute("data-active"));
       (btn as HTMLElement).setAttribute("data-active", "true");
       rows.forEach(row => {
         const el = row as HTMLElement;
