@@ -15,7 +15,7 @@ for (const post of posts) {
     tagCount[tag] = (tagCount[tag] ?? 0) + 1;
   }
 }
-const topTags = Object.entries(tagCount).sort((a, b) => b[1] - a[1]).slice(0, 6).map(([t]) => t);
+const topTags = Object.entries(tagCount).sort((a, b) => b[1] - a[1]).map(([t]) => t);
 
 function formatDate(date: Date) {
   return date.toISOString().slice(0, 7).replace("-", ".");
@@ -70,13 +70,9 @@ function formatDate(date: Date) {
     filters.forEach(b => (b as HTMLElement).removeAttribute("data-active"));
     const activeBtn = document.querySelector(`.tag-f[data-tag="${tag}"]`) as HTMLElement;
     if (activeBtn) activeBtn.setAttribute("data-active", "true");
-    else {
-      const allBtn = document.querySelector('.tag-f[data-tag="all"]') as HTMLElement;
-      if (allBtn) allBtn.setAttribute("data-active", "true");
-    }
     rows.forEach(row => {
       const el = row as HTMLElement;
-      if (tag === "all" || !activeBtn) {
+      if (tag === "all") {
         el.style.display = "";
       } else {
         const tags = el.dataset.tags || "";
