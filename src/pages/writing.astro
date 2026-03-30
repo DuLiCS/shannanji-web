@@ -48,7 +48,7 @@ function formatDate(date: Date) {
     font-family: "JetBrains Mono", monospace;
   }
   .tag-f:hover { border-color: var(--accent); color: var(--accent); }
-  .tag-f.is-active { border-color: var(--accent); color: var(--accent); }
+  .tag-f[data-active="true"] { border-color: var(--accent); color: var(--accent); }
   .posts-list { display: flex; flex-direction: column; }
   .post-row {
     display: grid; grid-template-columns: 100px 1fr 160px;
@@ -84,7 +84,7 @@ function formatDate(date: Date) {
   <div class="page-header">
     <div class="page-title">all writing — {sorted.length} posts</div>
     <div class="tag-filters">
-      <button class="tag-f is-active" data-tag="all">all</button>
+      <button class="tag-f" data-active="true" data-tag="all">all</button>
       {topTags.map(tag => (
         <button class="tag-f" data-tag={tag}>{tag}</button>
       ))}
@@ -119,7 +119,7 @@ function formatDate(date: Date) {
     btn.addEventListener("click", () => {
       const tag = (btn as HTMLElement).dataset.tag || "all";
       filters.forEach(b => b.classList.remove("is-active"));
-      btn.classList.add("is-active");
+      (btn as HTMLElement).setAttribute("data-active", "true");
       rows.forEach(row => {
         const el = row as HTMLElement;
         if (tag === "all") {
