@@ -18,7 +18,6 @@ function formatDate(date: Date) {
   nav {
     display: flex; justify-content: space-between; align-items: center;
     padding: 32px 0; border-bottom: 1px solid var(--border);
-    max-width: 90%; margin: 0 auto;
   }
   .logo { font-size: 15px; color: var(--text-muted); letter-spacing: 0.12em; text-decoration: none; }
   .logo span { color: var(--accent); }
@@ -28,13 +27,14 @@ function formatDate(date: Date) {
   .nav-links a.active { color: var(--text); }
   .nav-right { display: flex; align-items: center; gap: 20px; }
 
-  .page-header { padding: 48px 0 28px; max-width: 90%; margin: 0 auto; }
+  .page-header { padding: 48px 0 28px; }
   .page-title {
     font-family: 'LXGW WenKai', 'Noto Serif SC', serif;
-    font-size: 15px; font-weight: 400; color: var(--text-muted); letter-spacing: 0.18em; text-transform: uppercase;
+    font-size: 15px; font-weight: 400; color: var(--text-muted);
+    letter-spacing: 0.18em; text-transform: uppercase;
   }
 
-  .section { max-width: 90%; margin: 0 auto 52px; }
+  .section { margin-bottom: 52px; }
   .posts-list { display: flex; flex-direction: column; }
   .post-row {
     display: grid; grid-template-columns: 96px 1fr 20px;
