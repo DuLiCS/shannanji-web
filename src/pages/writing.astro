@@ -45,11 +45,10 @@ function formatDate(date: Date) {
     font-size: 11px; color: var(--text-faint); letter-spacing: 0.08em;
     border: 1px solid var(--border); padding: 5px 12px; border-radius: 2px;
     cursor: pointer; transition: all 0.15s; background: none;
-    font-family: 'JetBrains Mono', monospace;
+    font-family: "JetBrains Mono", monospace;
   }
   .tag-f:hover { border-color: var(--accent); color: var(--accent); }
-  .tag-f.active { border-color: var(--accent); color: var(--accent); }
-
+  .tag-f.is-active { border-color: var(--accent); color: var(--accent); }
   .posts-list { display: flex; flex-direction: column; }
   .post-row {
     display: grid; grid-template-columns: 100px 1fr 160px;
@@ -58,12 +57,10 @@ function formatDate(date: Date) {
     transition: opacity 0.15s;
   }
   .post-row:hover { opacity: 0.7; }
-  .post-row[data-hidden="true"] { display: none; }
-
   .post-date { font-size: 13px; color: var(--text-faint); letter-spacing: 0.06em; }
   .post-center { display: flex; flex-direction: column; gap: 5px; }
   .post-title {
-    font-family: 'LXGW WenKai', 'Noto Serif SC', serif;
+    font-family: "LXGW WenKai", "Noto Serif SC", serif;
     font-size: 18px; font-weight: 400; color: var(--text); line-height: 1.5;
   }
   .post-subtitle { font-size: 13px; color: var(--text-muted); }
@@ -87,7 +84,7 @@ function formatDate(date: Date) {
   <div class="page-header">
     <div class="page-title">all writing — {sorted.length} posts</div>
     <div class="tag-filters">
-      <button class="tag-f active" data-tag="all">all</button>
+      <button class="tag-f is-active" data-tag="all">all</button>
       {topTags.map(tag => (
         <button class="tag-f" data-tag={tag}>{tag}</button>
       ))}
@@ -99,7 +96,7 @@ function formatDate(date: Date) {
       
         class="post-row"
         href={`/posts/${post.id}`}
-        data-tags={post.data.tags?.join(',') ?? ''}
+        data-tags={post.data.tags?.join(",") ?? ""}
       >
         <span class="post-date">{formatDate(post.data.date)}</span>
         <div class="post-center">
@@ -115,22 +112,21 @@ function formatDate(date: Date) {
 </div>
 
 <script>
-  const filters = document.querySelectorAll('.tag-f');
-  const rows = document.querySelectorAll('.post-row');
+  const filters = document.querySelectorAll(".tag-f");
+  const rows = document.querySelectorAll(".post-row");
 
   filters.forEach(btn => {
-    btn.addEventListener('click', () => {
-      const tag = (btn as HTMLElement).dataset.tag || 'all';
-      filters.forEach(b => b.classList.remove('active'));
-      btn.classList.add('active');
+    btn.addEventListener("click", () => {
+      const tag = (btn as HTMLElement).dataset.tag || "all";
+      filters.forEach(b => b.classList.remove("is-active"));
+      btn.classList.add("is-active");
       rows.forEach(row => {
         const el = row as HTMLElement;
-        if (tag === 'all') {
-          el.dataset.hidden = 'false';
-          el.style.display = '';
+        if (tag === "all") {
+          el.style.display = "";
         } else {
-          const tags = el.dataset.tags || '';
-          el.style.display = tags.split(',').includes(tag) ? '' : 'none';
+          const tags = el.dataset.tags || "";
+          el.style.display = tags.split(",").includes(tag) ? "" : "none";
         }
       });
     });
