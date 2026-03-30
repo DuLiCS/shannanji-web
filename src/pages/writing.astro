@@ -65,20 +65,33 @@ function formatDate(date: Date) {
 <script>
   const filters = document.querySelectorAll(".tag-f");
   const rows = document.querySelectorAll(".writing-row");
+
+  function applyFilter(tag: string) {
+    filters.forEach(b => (b as HTMLElement).removeAttribute("data-active"));
+    const activeBtn = document.querySelector(`.tag-f[data-tag="${tag}"]`) as HTMLElement;
+    if (activeBtn) activeBtn.setAttribute("data-active", "true");
+    else {
+      const allBtn = document.querySelector('.tag-f[data-tag="all"]') as HTMLElement;
+      if (allBtn) allBtn.setAttribute("data-active", "true");
+    }
+    rows.forEach(row => {
+      const el = row as HTMLElement;
+      if (tag === "all" || !activeBtn) {
+        el.style.display = "";
+      } else {
+        const tags = el.dataset.tags || "";
+        el.style.display = tags.split(",").includes(tag) ? "" : "none";
+      }
+    });
+  }
+
+  const urlTag = new URLSearchParams(window.location.search).get("tag") || "all";
+  applyFilter(urlTag);
+
   filters.forEach(btn => {
     btn.addEventListener("click", () => {
       const tag = (btn as HTMLElement).dataset.tag || "all";
-      filters.forEach(b => (b as HTMLElement).removeAttribute("data-active"));
-      (btn as HTMLElement).setAttribute("data-active", "true");
-      rows.forEach(row => {
-        const el = row as HTMLElement;
-        if (tag === "all") {
-          el.style.display = "";
-        } else {
-          const tags = el.dataset.tags || "";
-          el.style.display = tags.split(",").includes(tag) ? "" : "none";
-        }
-      });
+      applyFilter(tag);
     });
   });
 </script>

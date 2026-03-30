@@ -164,7 +164,7 @@ function formatDate(date: Date) {
         <div class="section-label">TOPICS</div>
         <div class="category-row">
           {tags.map(([tag, count]) => (
-            <div class="cat-chip">{tag} <span class="count">{count}</span></div>
+            <a class="cat-chip" href={`/writing?tag=${tag}`}>{tag} <span class="count">{count}</span></a>
           ))}
         </div>
       </div>
