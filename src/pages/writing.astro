@@ -9,6 +9,14 @@ const sorted = posts.sort((a, b) =>
   new Date(b.data.date).getTime() - new Date(a.data.date).getTime()
 );
 
+const tagCount: Record<string, number> = {};
+for (const post of posts) {
+  for (const tag of post.data.tags ?? []) {
+    tagCount[tag] = (tagCount[tag] ?? 0) + 1;
+  }
+}
+const topTags = Object.entries(tagCount).sort((a, b) => b[1] - a[1]).slice(0, 6).map(([t]) => t);
+
 function formatDate(date: Date) {
   return date.toISOString().slice(0, 7).replace('-', '.');
 }
@@ -27,33 +35,39 @@ function formatDate(date: Date) {
   .nav-links a.active { color: var(--text); }
   .nav-right { display: flex; align-items: center; gap: 20px; }
 
-  .page-header { padding: 48px 0 28px; }
-  .page-title {
-    font-family: 'LXGW WenKai', 'Noto Serif SC', serif;
-    font-size: 15px; font-weight: 400; color: var(--text-muted);
-    letter-spacing: 0.18em; text-transform: uppercase;
+  .page-header {
+    display: flex; justify-content: space-between; align-items: center;
+    padding: 32px 0 20px; border-bottom: 1px solid var(--border);
   }
+  .page-title { font-size: 13px; color: var(--text-faint); letter-spacing: 0.2em; text-transform: uppercase; }
+  .tag-filters { display: flex; gap: 8px; flex-wrap: wrap; }
+  .tag-f {
+    font-size: 11px; color: var(--text-faint); letter-spacing: 0.08em;
+    border: 1px solid var(--border); padding: 5px 12px; border-radius: 2px;
+    cursor: pointer; transition: all 0.15s; background: none;
+    font-family: 'JetBrains Mono', monospace;
+  }
+  .tag-f:hover { border-color: var(--accent); color: var(--accent); }
+  .tag-f.active { border-color: var(--accent); color: var(--accent); }
 
-  .section { margin-bottom: 52px; }
   .posts-list { display: flex; flex-direction: column; }
   .post-row {
-    display: grid; grid-template-columns: 96px 1fr 20px;
-    align-items: baseline; gap: 28px; padding: 20px 0;
+    display: grid; grid-template-columns: 100px 1fr 160px;
+    align-items: baseline; gap: 32px; padding: 22px 0;
     border-bottom: 1px solid var(--border-light); cursor: pointer; text-decoration: none;
     transition: opacity 0.15s;
   }
-  .post-row:hover { opacity: 0.75; }
-  .post-row:hover .post-arrow { opacity: 1; }
+  .post-row:hover { opacity: 0.7; }
+  .post-row[data-hidden="true"] { display: none; }
+
   .post-date { font-size: 13px; color: var(--text-faint); letter-spacing: 0.06em; }
   .post-center { display: flex; flex-direction: column; gap: 5px; }
   .post-title {
     font-family: 'LXGW WenKai', 'Noto Serif SC', serif;
     font-size: 18px; font-weight: 400; color: var(--text); line-height: 1.5;
   }
-  .post-meta { display: flex; gap: 12px; align-items: center; }
-  .post-tag { font-size: 12px; color: var(--accent); letter-spacing: 0.1em; }
   .post-subtitle { font-size: 13px; color: var(--text-muted); }
-  .post-arrow { font-size: 14px; color: var(--text-faint); opacity: 0; transition: opacity 0.15s; }
+  .post-tag { font-size: 12px; color: var(--accent); letter-spacing: 0.1em; text-align: right; }
 </style>
 
 <div class="container">
@@ -72,28 +86,54 @@ function formatDate(date: Date) {
 
   <div class="page-header">
     <div class="page-title">all writing — {sorted.length} posts</div>
-  </div>
-
-  <div class="section">
-    <div class="posts-list">
-      {sorted.map(post => (
-        <a class="post-row" href={`/posts/${post.id}`}>
-          <span class="post-date">{formatDate(post.data.date)}</span>
-          <div class="post-center">
-            <div class="post-title">{post.data.title}</div>
-            <div class="post-meta">
-              {post.data.subtitle && <span class="post-subtitle">{post.data.subtitle}</span>}
-              {post.data.tags && post.data.tags.slice(0, 2).map((tag: string) => (
-                <span class="post-tag">{tag}</span>
-              ))}
-            </div>
-          </div>
-          <span class="post-arrow">→</span>
-        </a>
+    <div class="tag-filters">
+      <button class="tag-f active" data-tag="all">all</button>
+      {topTags.map(tag => (
+        <button class="tag-f" data-tag={tag}>{tag}</button>
       ))}
     </div>
   </div>
 
+  <div class="posts-list">
+    {sorted.map(post => (
+      
+        class="post-row"
+        href={`/posts/${post.id}`}
+        data-tags={post.data.tags?.join(',') ?? ''}
+      >
+        <span class="post-date">{formatDate(post.data.date)}</span>
+        <div class="post-center">
+          <div class="post-title">{post.data.title}</div>
+          {post.data.subtitle && <div class="post-subtitle">{post.data.subtitle}</div>}
+        </div>
+        <div class="post-tag">{post.data.tags?.[0]}</div>
+      </a>
+    ))}
+  </div>
+
   <Footer />
 </div>
+
+<script>
+  const filters = document.querySelectorAll('.tag-f');
+  const rows = document.querySelectorAll('.post-row');
+
+  filters.forEach(btn => {
+    btn.addEventListener('click', () => {
+      const tag = (btn as HTMLElement).dataset.tag || 'all';
+      filters.forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      rows.forEach(row => {
+        const el = row as HTMLElement;
+        if (tag === 'all') {
+          el.dataset.hidden = 'false';
+          el.style.display = '';
+        } else {
+          const tags = el.dataset.tags || '';
+          el.style.display = tags.split(',').includes(tag) ? '' : 'none';
+        }
+      });
+    });
+  });
+</script>
 </BaseLayout>
