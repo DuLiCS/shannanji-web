@@ -54,3 +54,4 @@ a { color: inherit; text-decoration: none; }
   margin: 0 auto;
   padding: 0 80px;
 }
+.tag-f[data-active="true"] { border-color: var(--accent); color: var(--accent); }
