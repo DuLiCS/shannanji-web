@@ -1,0 +1,43 @@
+<style>
+  .theme-switcher {
+    display: flex;
+    gap: 6px;
+    align-items: center;
+  }
+  .theme-btn {
+    width: 18px;
+    height: 18px;
+    border-radius: 50%;
+    border: 1.5px solid transparent;
+    cursor: pointer;
+    transition: border-color 0.2s, transform 0.15s;
+  }
+  .theme-btn:hover { transform: scale(1.15); }
+  .theme-btn.active { border-color: var(--text-muted); }
+  .theme-btn[data-t="light"]  { background: #faf9f7; border-color: #ccc; }
+  .theme-btn[data-t="dark"]   { background: #141414; }
+  .theme-btn[data-t="paper"]  { background: #f5f0e8; border-color: #c8b89a; }
+</style>
+
+<div class="theme-switcher">
+  <button class="theme-btn" data-t="light"  title="白底"></button>
+  <button class="theme-btn" data-t="dark"   title="暗色"></button>
+  <button class="theme-btn" data-t="paper"  title="纸本色"></button>
+</div>
+
+<script>
+  function applyTheme(t) {
+    document.documentElement.setAttribute('data-theme', t);
+    localStorage.setItem('theme', t);
+    document.querySelectorAll('.theme-btn').forEach(btn => {
+      btn.classList.toggle('active', btn.dataset.t === t);
+    });
+  }
+
+  const saved = localStorage.getItem('theme') || 'light';
+  applyTheme(saved);
+
+  document.querySelectorAll('.theme-btn').forEach(btn => {
+    btn.addEventListener('click', () => applyTheme(btn.dataset.t));
+  });
+</script>

@@ -1,16 +1,55 @@
 *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
 
+:root {
+  --bg: #faf9f7;
+  --bg-secondary: #f4f2ee;
+  --text: #2a2a28;
+  --text-muted: #888;
+  --text-faint: #c0bdb8;
+  --border: #e8e6e0;
+  --border-light: #f0ede8;
+  --accent: #3d7a56;
+  --accent-light: #d0e8da;
+}
+
+[data-theme="dark"] {
+  --bg: #141414;
+  --bg-secondary: #1e1e1e;
+  --text: #d8d8d0;
+  --text-muted: #666;
+  --text-faint: #444;
+  --border: #2a2a2a;
+  --border-light: #222;
+  --accent: #6aaa84;
+  --accent-light: #1a3a28;
+}
+
+[data-theme="paper"] {
+  --bg: #f5f0e8;
+  --bg-secondary: #ede8de;
+  --text: #3a3028;
+  --text-muted: #8a7a6a;
+  --text-faint: #b0a090;
+  --border: #ddd8cc;
+  --border-light: #e8e0d4;
+  --accent: #8a6a4a;
+  --accent-light: #e0d0bc;
+}
+
+html { font-size: 16px; }
+
 body {
-  background: #faf9f7;
-  color: #2a2a28;
+  background: var(--bg);
+  color: var(--text);
   font-family: 'JetBrains Mono', monospace;
   -webkit-font-smoothing: antialiased;
+  transition: background 0.25s, color 0.25s;
 }
 
 a { color: inherit; text-decoration: none; }
 
 .container {
-  max-width: 1100px;
+  width: 92%;
+  max-width: 1400px;
   margin: 0 auto;
-  width: 100%;
 }

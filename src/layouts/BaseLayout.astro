@@ -3,7 +3,7 @@ interface Props {
   title?: string;
   description?: string;
 }
-const { title = '山南记-个人站', description = "whatever people say i am, that's what i'm not." } = Astro.props;
+const { title = '山南记 — 个人站', description = "whatever people say i am, that's what i'm not." } = Astro.props;
 ---
 <!DOCTYPE html>
 <html lang="zh">
@@ -16,6 +16,10 @@ const { title = '山南记-个人站', description = "whatever people say i am, 
   <link href="https://lf9-cdn-tos.bytecdntp.com/cdn/expire-1-M/lxgw-wenkai/1.300/style.min.css" rel="stylesheet" />
   <link href="https://fonts.googleapis.cnpmjs.org/css2?family=JetBrains+Mono:wght@300;400;500&family=Noto+Serif+SC:wght@300;400;500&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="/styles/global.css" />
+  <script is:inline>
+    const t = localStorage.getItem('theme') || 'light';
+    document.documentElement.setAttribute('data-theme', t);
+  </script>
 </head>
 <body>
   <slot />
