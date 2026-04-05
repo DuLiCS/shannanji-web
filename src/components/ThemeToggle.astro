@@ -15,8 +15,8 @@
   .theme-btn:hover { transform: scale(1.15); }
   .theme-btn.active { border-color: var(--text-muted); }
   .theme-btn[data-t="light"]  { background: #faf9f7; border-color: #ccc; }
-  .theme-btn[data-t="dark"]   { background: #141414; }
-  .theme-btn[data-t="paper"]  { background: #f5f0e8; border-color: #c8b89a; }
+  .theme-btn[data-t="dark"]   { background: #1a1714; border-color: #4a443e; }
+  .theme-btn[data-t="paper"]  { background: #f0e8d8; border-color: #b8a888; }
 </style>
 
 <div class="theme-switcher">
@@ -34,7 +34,7 @@
     });
   }
 
-  const saved = localStorage.getItem('theme') || 'light';
+  const saved = localStorage.getItem('theme') || 'paper';
   applyTheme(saved);
 
   document.querySelectorAll('.theme-btn').forEach(btn => {
