@@ -28,7 +28,7 @@ const years = Object.keys(grouped).sort((a, b) => Number(b) - Number(a));
 ---
 <BaseLayout title="文章 — 山南记">
 <style>
-  .year-group { position: relative; }
+  .year-group { position: relative; overflow: hidden; }
   .year-bg {
     font-family: 'JetBrains Mono', monospace;
     font-size: clamp(72px, 10vw, 120px);

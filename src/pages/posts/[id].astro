@@ -18,6 +18,11 @@ export async function getStaticPaths() {
 const { post, prev, next } = Astro.props;
 const { Content } = await render(post);
 const description = post.data.subtitle ?? post.data.tags?.join(' · ') ?? post.data.title;
+
+const bodyText = post.body ?? '';
+const chineseChars = (bodyText.match(/[\u4e00-\u9fff]/g) ?? []).length;
+const englishWords = (bodyText.replace(/[\u4e00-\u9fff]/g, '').match(/\b\w+\b/g) ?? []).length;
+const readingMinutes = Math.max(1, Math.round(chineseChars / 400 + englishWords / 200));
 ---
 <BaseLayout title={`${post.data.title} — 山南记`} description={description}>
 <style>
@@ -29,6 +34,7 @@ const description = post.data.subtitle ?? post.data.tags?.join(' · ') ?? post.d
   .post-header { padding: 52px 0 36px; max-width: 740px; margin: 0 auto; }
   .post-meta-top { display: flex; gap: 16px; align-items: center; margin-bottom: 24px; }
   .post-date { font-size: 13px; color: var(--text-faint); letter-spacing: 0.08em; }
+  .post-reading-time { font-size: 13px; color: var(--text-faint); letter-spacing: 0.06em; }
   .post-tag {
     font-size: 12px; color: var(--accent); letter-spacing: 0.1em;
     border: 1px solid var(--accent-light); padding: 3px 10px; border-radius: 2px;
@@ -87,8 +93,32 @@ const description = post.data.subtitle ?? post.data.tags?.join(' · ') ?? post.d
   }
 
   .post-body :global(blockquote) {
-    border-left: 2px solid var(--border); padding-left: 24px;
-    margin: 1.6em 0; color: var(--text-muted); font-style: italic;
+    position: relative;
+    margin: 2em 0;
+    padding: 20px 28px 20px 52px;
+    background: var(--bg-secondary);
+    border-left: 3px solid var(--accent);
+    border-radius: 0 4px 4px 0;
+  }
+  .post-body :global(blockquote::before) {
+    content: '\201C';
+    position: absolute;
+    left: 14px;
+    top: 12px;
+    font-family: Georgia, serif;
+    font-size: 48px;
+    line-height: 1;
+    color: var(--accent);
+    opacity: 0.4;
+  }
+  .post-body :global(blockquote p) {
+    font-style: italic;
+    color: var(--text-muted);
+    margin-bottom: 0;
+    text-indent: 0;
+  }
+  .post-body :global(blockquote p + p) {
+    margin-top: 0.8em;
   }
 
   .post-body :global(img) { max-width: 100%; border-radius: 4px; margin: 1.6em 0; }
@@ -149,6 +179,7 @@ const description = post.data.subtitle ?? post.data.tags?.join(' · ') ?? post.d
   <div class="post-header">
     <div class="post-meta-top">
       <span class="post-date">{formatFullDate(post.data.date)}</span>
+      <span class="post-reading-time">约 {readingMinutes} 分钟</span>
       {post.data.tags && post.data.tags.map((tag: string) => (
         <span class="post-tag">{tag}</span>
       ))}
