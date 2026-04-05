@@ -17,8 +17,35 @@ for (const post of posts) {
   }
 }
 const topTags = Object.entries(tagCount).sort((a, b) => b[1] - a[1]).map(([t]) => t);
+
+const grouped: Record<string, typeof sorted> = {};
+for (const post of sorted) {
+  const year = new Date(post.data.date).getFullYear().toString();
+  if (!grouped[year]) grouped[year] = [];
+  grouped[year].push(post);
+}
+const years = Object.keys(grouped).sort((a, b) => Number(b) - Number(a));
 ---
 <BaseLayout title="文章 — 山南记">
+<style>
+  .year-group { position: relative; }
+  .year-bg {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: clamp(72px, 10vw, 120px);
+    font-weight: 400;
+    color: var(--text);
+    opacity: 0.045;
+    line-height: 1;
+    letter-spacing: -0.03em;
+    pointer-events: none;
+    user-select: none;
+    position: absolute;
+    top: -8px;
+    left: -4px;
+    z-index: 0;
+  }
+  .year-posts { position: relative; z-index: 1; }
+</style>
 <div class="container">
   <SiteNav active="writing" />
 
@@ -33,15 +60,22 @@ const topTags = Object.entries(tagCount).sort((a, b) => b[1] - a[1]).map(([t]) =
   </div>
 
   <div class="writing-list">
-    {sorted.map(post => (
-      <a class="writing-row" href={"/posts/" + post.id} data-tags={post.data.tags?.join(",") ?? ""}>
-        <span class="writing-date">{formatYearMonth(post.data.date)}</span>
-        <div class="writing-center">
-          <div class="writing-post-title">{post.data.title}</div>
-          {post.data.subtitle && <div class="writing-subtitle">{post.data.subtitle}</div>}
+    {years.map(year => (
+      <div class="year-group">
+        <div class="year-bg" aria-hidden="true">{year}</div>
+        <div class="year-posts">
+          {grouped[year].map(post => (
+            <a class="writing-row" href={"/posts/" + post.id} data-tags={post.data.tags?.join(",") ?? ""}>
+              <span class="writing-date">{formatYearMonth(post.data.date)}</span>
+              <div class="writing-center">
+                <div class="writing-post-title">{post.data.title}</div>
+                {post.data.subtitle && <div class="writing-subtitle">{post.data.subtitle}</div>}
+              </div>
+              <div class="writing-tag">{post.data.tags?.[0]}</div>
+            </a>
+          ))}
         </div>
-        <div class="writing-tag">{post.data.tags?.[0]}</div>
-      </a>
+      </div>
     ))}
   </div>
 
@@ -64,6 +98,11 @@ const topTags = Object.entries(tagCount).sort((a, b) => b[1] - a[1]).map(([t]) =
         const tags = el.dataset.tags || "";
         el.style.display = tags.split(",").includes(tag) ? "" : "none";
       }
+    });
+    // hide year groups where all posts are filtered out
+    document.querySelectorAll<HTMLElement>(".year-group").forEach(group => {
+      const visible = group.querySelectorAll<HTMLElement>('.writing-row:not([style*="none"])');
+      group.style.display = visible.length === 0 ? "none" : "";
     });
   }
 
