@@ -1,7 +1,9 @@
 ---
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import Footer from '../../components/Footer.astro';
+import SiteNav from '../../components/SiteNav.astro';
 import { getCollection } from 'astro:content';
+import { formatYearMonth } from '../../utils/date';
 
 export async function getStaticPaths() {
   const posts = await getCollection('posts');
@@ -23,65 +25,42 @@ const filtered = allPosts
   .filter(post => post.data.tags?.includes(tag))
   .sort((a, b) => new Date(b.data.date).getTime() - new Date(a.data.date).getTime());
 
-function formatDate(date: Date) {
-  return date.toISOString().slice(0, 7).replace('-', '.');
-}
 ---
 <BaseLayout title={`${tag} — 山南记`}>
 <style>
-  .container { max-width: 1000px; margin: 0 auto; width: 100%; padding: 0 48px; }
-  nav {
-    display: flex; justify-content: space-between; align-items: center;
-    padding: 32px 0; border-bottom: 1px solid #e8e6e0;
-    max-width: 860px; margin: 0 auto;
-  }
-  .logo { font-size: 14px; color: #999; letter-spacing: 0.12em; text-decoration: none; }
-  .logo span { color: #3d7a56; }
-  .nav-links { display: flex; gap: 40px; list-style: none; }
-  .nav-links a { font-size: 13px; color: #aaa; letter-spacing: 0.08em; text-decoration: none; transition: color 0.2s; }
-  .nav-links a:hover { color: #2a2a28; }
-
   .page-header { padding: 48px 0 28px; max-width: 860px; margin: 0 auto; }
-  .page-label { font-size: 11px; color: #c0bdb8; letter-spacing: 0.3em; margin-bottom: 12px; }
+  .page-label { font-size: 11px; color: var(--text-faint); letter-spacing: 0.3em; margin-bottom: 12px; }
   .page-title {
     font-family: 'LXGW WenKai', 'Noto Serif SC', serif;
-    font-size: 28px; font-weight: 300; color: #1a1a18;
+    font-size: 28px; font-weight: 300; color: var(--text);
   }
-  .page-count { font-size: 12px; color: #c0bdb8; margin-top: 6px; }
+  .page-count { font-size: 12px; color: var(--text-faint); margin-top: 6px; }
 
   .section { max-width: 860px; margin: 0 auto 52px; }
   .posts-list { display: flex; flex-direction: column; }
   .post-row {
     display: grid; grid-template-columns: 88px 1fr 20px;
     align-items: baseline; gap: 28px; padding: 20px 0;
-    border-bottom: 1px solid #f0ede8; cursor: pointer; text-decoration: none;
+    border-bottom: 1px solid var(--border-light); cursor: pointer; text-decoration: none;
   }
-  .post-row:hover .post-title { color: #1a1a18; }
+  .post-row:hover .post-title { color: var(--text); }
   .post-row:hover .post-arrow { opacity: 1; }
-  .post-date { font-size: 12px; color: #c0bdb8; letter-spacing: 0.06em; }
+  .post-date { font-size: 12px; color: var(--text-faint); letter-spacing: 0.06em; }
   .post-center { display: flex; flex-direction: column; gap: 5px; }
   .post-title {
     font-family: 'LXGW WenKai', 'Noto Serif SC', serif;
-    font-size: 17px; font-weight: 400; color: #3a3a36; line-height: 1.5; transition: color 0.15s;
+    font-size: 17px; font-weight: 400; color: var(--text-muted); line-height: 1.5; transition: color 0.15s;
   }
-  .post-tag { font-size: 11px; color: #3d7a56; letter-spacing: 0.1em; }
-  .post-arrow { font-size: 13px; color: #c0bdb8; opacity: 0; transition: opacity 0.15s; }
+  .post-tag { font-size: 11px; color: var(--accent); letter-spacing: 0.1em; }
+  .post-arrow { font-size: 13px; color: var(--text-faint); opacity: 0; transition: opacity 0.15s; }
 
-  .back-link-wrap { max-width: 860px; margin: 0 auto; padding: 24px 0; border-top: 1px solid #eeece8; }
-  .back-link { font-size: 13px; color: #aaa; text-decoration: none; transition: color 0.2s; }
-  .back-link:hover { color: #3d7a56; }
+  .back-link-wrap { max-width: 860px; margin: 0 auto; padding: 24px 0; border-top: 1px solid var(--border-light); }
+  .back-link { font-size: 13px; color: var(--text-muted); text-decoration: none; transition: color 0.2s; }
+  .back-link:hover { color: var(--accent); }
 </style>
 
 <div class="container">
-  <nav>
-    <a href="/" class="logo"><span>/</span> shannanji</a>
-    <ul class="nav-links">
-      <li><a href="/writing">writing</a></li>
-      <li><a href="/notes">notes</a></li>
-      <li><a href="/about">about</a></li>
-      <li><a href="/rss.xml">rss</a></li>
-    </ul>
-  </nav>
+  <SiteNav />
 
   <div class="page-header">
     <div class="page-label">TOPIC</div>
@@ -93,7 +72,7 @@ function formatDate(date: Date) {
     <div class="posts-list">
       {filtered.map(post => (
         <a class="post-row" href={`/posts/${post.id}`}>
-          <span class="post-date">{formatDate(post.data.date)}</span>
+          <span class="post-date">{formatYearMonth(post.data.date)}</span>
           <div class="post-center">
             <div class="post-title">{post.data.title}</div>
             <div class="post-tag">{post.data.tags?.[0]}</div>

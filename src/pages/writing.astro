@@ -1,8 +1,9 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
 import Footer from '../components/Footer.astro';
-import ThemeToggle from '../components/ThemeToggle.astro';
+import SiteNav from '../components/SiteNav.astro';
 import { getCollection } from 'astro:content';
+import { formatYearMonth } from '../utils/date';
 
 const posts = await getCollection('posts');
 const sorted = posts.sort((a, b) =>
@@ -16,25 +17,10 @@ for (const post of posts) {
   }
 }
 const topTags = Object.entries(tagCount).sort((a, b) => b[1] - a[1]).map(([t]) => t);
-
-function formatDate(date: Date) {
-  return date.toISOString().slice(0, 7).replace("-", ".");
-}
 ---
 <BaseLayout title="文章 — 山南记">
 <div class="container">
-  <nav class="site-nav">
-    <a href="/" class="nav-logo"><span>/</span> shannanji</a>
-    <ul class="nav-links">
-      <li><a href="/writing" class="nav-active">writing</a></li>
-      <li><a href="/notes">notes</a></li>
-      <li><a href="/about">about</a></li>
-      <li><a href="/rss.xml">rss</a></li>
-    </ul>
-    <div class="nav-right">
-      <ThemeToggle />
-    </div>
-  </nav>
+  <SiteNav active="writing" />
 
   <div class="writing-header">
     <div class="writing-title">all writing — {sorted.length} posts</div>
@@ -49,7 +35,7 @@ function formatDate(date: Date) {
   <div class="writing-list">
     {sorted.map(post => (
       <a class="writing-row" href={"/posts/" + post.id} data-tags={post.data.tags?.join(",") ?? ""}>
-        <span class="writing-date">{formatDate(post.data.date)}</span>
+        <span class="writing-date">{formatYearMonth(post.data.date)}</span>
         <div class="writing-center">
           <div class="writing-post-title">{post.data.title}</div>
           {post.data.subtitle && <div class="writing-subtitle">{post.data.subtitle}</div>}

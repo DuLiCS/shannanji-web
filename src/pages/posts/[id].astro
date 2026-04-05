@@ -1,8 +1,9 @@
 ---
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import Footer from '../../components/Footer.astro';
-import ThemeToggle from '../../components/ThemeToggle.astro';
+import SiteNav from '../../components/SiteNav.astro';
 import { getCollection, render } from 'astro:content';
+import { formatFullDate } from '../../utils/date';
 
 export async function getStaticPaths() {
   const posts = await getCollection('posts');
@@ -14,24 +15,9 @@ export async function getStaticPaths() {
 
 const { post } = Astro.props;
 const { Content } = await render(post);
-
-function formatDate(date: Date) {
-  return date.toISOString().slice(0, 10);
-}
 ---
 <BaseLayout title={`${post.data.title} — 山南记`}>
 <style>
-  nav {
-    display: flex; justify-content: space-between; align-items: center;
-    padding: 32px 0; border-bottom: 1px solid var(--border);
-  }
-  .logo { font-size: 15px; color: var(--text-muted); letter-spacing: 0.12em; text-decoration: none; }
-  .logo span { color: var(--accent); }
-  .nav-links { display: flex; gap: 40px; list-style: none; }
-  .nav-links a { font-size: 14px; color: var(--text-faint); letter-spacing: 0.08em; text-decoration: none; transition: color 0.2s; }
-  .nav-links a:hover { color: var(--text); }
-  .nav-right { display: flex; align-items: center; gap: 20px; }
-
   .post-header { padding: 52px 0 36px; max-width: 740px; margin: 0 auto; }
   .post-meta-top { display: flex; gap: 16px; align-items: center; margin-bottom: 24px; }
   .post-date { font-size: 13px; color: var(--text-faint); letter-spacing: 0.08em; }
@@ -120,22 +106,11 @@ function formatDate(date: Date) {
 </style>
 
 <div class="container">
-  <nav>
-    <a href="/" class="logo"><span>/</span> shannanji</a>
-    <ul class="nav-links">
-      <li><a href="/writing">writing</a></li>
-      <li><a href="/notes">notes</a></li>
-      <li><a href="/about">about</a></li>
-      <li><a href="/rss.xml">rss</a></li>
-    </ul>
-    <div class="nav-right">
-      <ThemeToggle />
-    </div>
-  </nav>
+  <SiteNav />
 
   <div class="post-header">
     <div class="post-meta-top">
-      <span class="post-date">{formatDate(post.data.date)}</span>
+      <span class="post-date">{formatFullDate(post.data.date)}</span>
       {post.data.tags && post.data.tags.map((tag: string) => (
         <span class="post-tag">{tag}</span>
       ))}

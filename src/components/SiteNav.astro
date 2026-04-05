@@ -1,0 +1,20 @@
+---
+import ThemeToggle from './ThemeToggle.astro';
+
+interface Props {
+  active?: 'writing' | 'notes' | 'about';
+}
+const { active } = Astro.props;
+---
+<nav class="site-nav">
+  <a href="/" class="nav-logo"><span>/</span> shannanji</a>
+  <ul class="nav-links">
+    <li><a href="/writing" class:list={[{ 'nav-active': active === 'writing' }]}>writing</a></li>
+    <li><a href="/notes" class:list={[{ 'nav-active': active === 'notes' }]}>notes</a></li>
+    <li><a href="/about" class:list={[{ 'nav-active': active === 'about' }]}>about</a></li>
+    <li><a href="/rss.xml">rss</a></li>
+  </ul>
+  <div class="nav-right">
+    <ThemeToggle />
+  </div>
+</nav>

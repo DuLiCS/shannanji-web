@@ -1,8 +1,9 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
 import Footer from '../components/Footer.astro';
-import ThemeToggle from '../components/ThemeToggle.astro';
+import SiteNav from '../components/SiteNav.astro';
 import { getCollection } from 'astro:content';
+import { formatYearMonth } from '../utils/date';
 
 const allPosts = await getCollection('posts');
 const recent = allPosts
@@ -16,24 +17,9 @@ for (const post of allPosts) {
   }
 }
 const tags = Object.entries(tagCount).sort((a, b) => b[1] - a[1]);
-
-function formatDate(date: Date) {
-  return date.toISOString().slice(0, 7).replace('-', '.');
-}
 ---
 <BaseLayout>
 <style>
-  nav {
-    display: flex; justify-content: space-between; align-items: center;
-    padding: 32px 0; border-bottom: 1px solid var(--border);
-  }
-  .logo { font-size: 15px; color: var(--text-muted); letter-spacing: 0.12em; text-decoration: none; }
-  .logo span { color: var(--accent); }
-  .nav-links { display: flex; gap: 40px; list-style: none; }
-  .nav-links a { font-size: 14px; color: var(--text-faint); letter-spacing: 0.08em; text-decoration: none; transition: color 0.2s; }
-  .nav-links a:hover { color: var(--text); }
-  .nav-right { display: flex; align-items: center; gap: 20px; }
-
   .hero { padding: 64px 0 48px; border-bottom: 1px solid var(--border); }
   .hero-eyebrow { font-size: 12px; color: var(--accent); letter-spacing: 0.28em; margin-bottom: 28px; text-transform: uppercase; }
   .hero-title-line1 {
@@ -129,32 +115,11 @@ function formatDate(date: Date) {
     .post-title { font-size: 16px; line-height: 1.6; }
     .post-date { font-size: 12px; }
     .hero-title-line2 { font-size: 28px; padding-left: 14px; }
-    nav {
-      display: grid;
-      grid-template-columns: 1fr auto;
-      grid-template-rows: auto auto;
-      gap: 10px;
-    }
-    .logo { grid-column: 1; grid-row: 1; }
-    .nav-right { grid-column: 2; grid-row: 1; }
-    .nav-links { grid-column: 1 / -1; grid-row: 2; gap: 16px; }
-    .nav-links a { font-size: 13px; }
   }
 </style>
 
 <div class="container">
-  <nav>
-    <a href="/" class="logo"><span>/</span> shannanji</a>
-    <ul class="nav-links">
-      <li><a href="/writing">writing</a></li>
-      <li><a href="/notes">notes</a></li>
-      <li><a href="/about">about</a></li>
-      <li><a href="/rss.xml">rss</a></li>
-    </ul>
-    <div class="nav-right">
-      <ThemeToggle />
-    </div>
-  </nav>
+  <SiteNav />
 
   <div class="hero">
     <div class="hero-eyebrow">blood, sweat &amp; tears</div>
@@ -170,7 +135,7 @@ function formatDate(date: Date) {
       <div class="posts-list">
         {recent.map(post => (
           <a class="post-row" href={`/posts/${post.id}`}>
-            <span class="post-date">{formatDate(post.data.date)}</span>
+            <span class="post-date">{formatYearMonth(post.data.date)}</span>
             <div class="post-center">
               <div class="post-title">{post.data.title}</div>
               <div class="post-tag">{post.data.tags?.[0]}</div>
