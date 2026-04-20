@@ -167,7 +167,7 @@ const tags = Object.entries(tagCount).sort((a, b) => b[1] - a[1]);
         <div class="section-label">TOPICS</div>
         <div class="category-row">
           {tags.map(([tag, count]) => (
-            <a class="cat-chip" href={`/writing?tag=${tag}`}>{tag} <span class="count">{count}</span></a>
+            <a class="cat-chip" href={`/topics/${tag}`}>{tag} <span class="count">{count}</span></a>
           ))}
         </div>
       </div>
