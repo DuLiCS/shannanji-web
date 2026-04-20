@@ -4,7 +4,6 @@ interface Props {
   description?: string;
 }
 const { title = '山南记 — 个人站', description = "whatever people say i am, that's what i'm not." } = Astro.props;
-const siteUrl = 'https://shannanji.com';
 ---
 <!DOCTYPE html>
 <html lang="zh">
@@ -16,7 +15,7 @@ const siteUrl = 'https://shannanji.com';
   <meta property="og:description" content={description} />
   <meta property="og:type" content="website" />
   <meta property="og:site_name" content="山南记" />
-  <meta property="og:url" content={siteUrl} />
+  <meta property="og:url" content={Astro.url.href} />
   <meta name="twitter:card" content="summary" />
   <meta name="twitter:title" content={title} />
   <meta name="twitter:description" content={description} />

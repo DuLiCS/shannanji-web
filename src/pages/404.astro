@@ -1,0 +1,44 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import SiteNav from '../components/SiteNav.astro';
+import Footer from '../components/Footer.astro';
+---
+<BaseLayout title="404 — 山南记">
+<style>
+  .body { max-width: 860px; margin: 0 auto; padding: 80px 0 64px; text-align: center; }
+  .code {
+    font-size: clamp(80px, 14vw, 140px);
+    font-family: 'JetBrains Mono', monospace;
+    color: var(--text);
+    opacity: 0.08;
+    line-height: 1;
+    letter-spacing: -0.04em;
+    user-select: none;
+    margin-bottom: 0;
+  }
+  .img-wrap { margin: -24px auto 32px; max-width: 360px; }
+  .img-wrap img { width: 100%; border-radius: 4px; }
+  .message {
+    font-family: 'LXGW WenKai', 'Noto Serif SC', serif;
+    font-size: 18px; color: var(--text-muted); line-height: 1.8; margin-bottom: 36px;
+  }
+  .back-link {
+    font-size: 13px; color: var(--accent); letter-spacing: 0.1em;
+    text-decoration: none; border-bottom: 1px solid var(--accent-light);
+    padding-bottom: 2px; transition: opacity 0.2s;
+  }
+  .back-link:hover { opacity: 0.7; }
+</style>
+<div class="container">
+  <SiteNav />
+  <div class="body">
+    <div class="code">404</div>
+    <div class="img-wrap">
+      <img src="/img/404-southpark.jpg" alt="404" />
+    </div>
+    <div class="message">这里什么都没有。</div>
+    <a class="back-link" href="/">← 回到首页</a>
+  </div>
+  <Footer />
+</div>
+</BaseLayout>
