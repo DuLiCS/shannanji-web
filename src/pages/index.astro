@@ -3,7 +3,7 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 import Footer from '../components/Footer.astro';
 import SiteNav from '../components/SiteNav.astro';
 import { getCollection } from 'astro:content';
-import { formatYearMonth } from '../utils/date';
+import { formatFullDateCN, formatDateEn } from '../utils/date';
 
 const allPosts = await getCollection('posts');
 const recent = allPosts
@@ -17,6 +17,25 @@ for (const post of allPosts) {
   }
 }
 const tags = Object.entries(tagCount).sort((a, b) => b[1] - a[1]);
+
+function getExcerpt(body: string, max = 65): string {
+  const first = body.split('\n')
+    .map(l => l.trim())
+    .find(l =>
+      l.length > 15 &&
+      !l.startsWith('#') && !l.startsWith('!') && !l.startsWith('>') &&
+      !l.startsWith('```') && !l.startsWith('-') && !l.startsWith('*') &&
+      !l.startsWith('|') && !l.startsWith('---')
+    );
+  if (!first) return '';
+  return first.length > max ? first.slice(0, max) + '…' : first;
+}
+
+function getReadingMinutes(body: string): number {
+  const cn = (body.match(/[\u4e00-\u9fff]/g) ?? []).length;
+  const en = (body.replace(/[\u4e00-\u9fff]/g, '').match(/\b\w+\b/g) ?? []).length;
+  return Math.max(1, Math.round(cn / 400 + en / 200));
+}
 ---
 <BaseLayout>
 <style>
@@ -46,8 +65,8 @@ const tags = Object.entries(tagCount).sort((a, b) => b[1] - a[1]);
 
   .content-grid {
     display: grid;
-    grid-template-columns: 1fr 320px;
-    gap: 80px;
+    grid-template-columns: 1fr 300px;
+    gap: 60px;
     padding: 48px 0;
     align-items: start;
   }
@@ -59,21 +78,31 @@ const tags = Object.entries(tagCount).sort((a, b) => b[1] - a[1]);
 
   .posts-list { display: flex; flex-direction: column; }
   .post-row {
-    display: grid; grid-template-columns: 100px 1fr 20px;
-    align-items: baseline; gap: 28px; padding: 20px 0;
-    border-bottom: 1px solid var(--border-light); cursor: pointer; text-decoration: none;
+    display: grid; grid-template-columns: 130px 1fr;
+    align-items: start; gap: 28px; padding: 22px 0;
+    border-bottom: 1px solid var(--border-light); text-decoration: none;
     transition: opacity 0.15s;
   }
   .post-row:hover { opacity: 0.7; }
-  .post-row:hover .post-arrow { opacity: 1; }
-  .post-date { font-size: 15px; color: var(--text-faint); letter-spacing: 0.06em; }
+
+  .post-date-col { display: flex; flex-direction: column; gap: 3px; padding-top: 4px; }
+  .post-date-cn { font-size: 12px; color: var(--text-faint); letter-spacing: 0.03em; line-height: 1.7; }
+  .post-date-en { font-size: 11px; color: var(--text-faint); opacity: 0.55; letter-spacing: 0.03em; }
+
   .post-center { display: flex; flex-direction: column; gap: 5px; }
   .post-title {
     font-family: 'LXGW WenKai', 'Noto Serif SC', serif;
-    font-size: 22px; font-weight: 400; color: var(--text); line-height: 1.5;
+    font-size: 20px; font-weight: 400; color: var(--text); line-height: 1.45;
   }
-  .post-tag { font-size: 12px; color: var(--accent); letter-spacing: 0.1em; }
-  .post-arrow { font-size: 14px; color: var(--text-faint); opacity: 0; transition: opacity 0.15s; }
+  .post-subtitle {
+    font-family: 'LXGW WenKai', 'Noto Serif SC', serif;
+    font-size: 14px; color: var(--text-muted); font-style: italic; letter-spacing: 0.03em;
+  }
+  .post-lede {
+    font-family: 'LXGW WenKai', 'Noto Serif SC', serif;
+    font-size: 14px; color: var(--text-muted); line-height: 1.8; margin-top: 1px;
+  }
+  .post-meta { font-size: 11px; color: var(--text-faint); letter-spacing: 0.06em; margin-top: 5px; }
 
   .section-footer { padding-top: 20px; }
   .all-link { font-size: 13px; color: var(--text-muted); letter-spacing: 0.1em; text-decoration: none; transition: color 0.2s; }
@@ -91,7 +120,6 @@ const tags = Object.entries(tagCount).sort((a, b) => b[1] - a[1]);
   .cat-chip:hover { border-color: var(--accent); color: var(--accent); }
   .cat-chip .count { font-size: 11px; color: var(--text-faint); }
 
-  .about-block { }
   .about-text {
     font-family: 'LXGW WenKai', 'Noto Serif SC', serif;
     font-size: 15px; color: var(--text-muted); line-height: 2;
@@ -105,19 +133,19 @@ const tags = Object.entries(tagCount).sort((a, b) => b[1] - a[1]);
       padding: 28px 0;
     }
     .side-col {
-      border-left: none;
       border-top: 1px solid var(--border);
       padding-top: 28px;
       gap: 24px;
     }
     .post-row {
-      grid-template-columns: 64px 1fr;
-      gap: 10px;
-      padding: 14px 0;
+      grid-template-columns: 1fr;
+      gap: 5px;
+      padding: 18px 0;
     }
-    .post-arrow { display: none; }
-    .post-title { font-size: 16px; line-height: 1.6; }
-    .post-date { font-size: 12px; }
+    .post-date-col { flex-direction: row; gap: 8px; align-items: baseline; padding-top: 0; }
+    .post-date-en { display: none; }
+    .post-title { font-size: 16px; line-height: 1.5; }
+    .post-lede { font-size: 13px; }
     .hero-title-line2 { font-size: 28px; padding-left: 14px; }
   }
 </style>
@@ -138,24 +166,32 @@ const tags = Object.entries(tagCount).sort((a, b) => b[1] - a[1]);
     <div class="main-col">
       <div class="section-label">RECENT WRITING</div>
       <div class="posts-list">
-        {recent.map(post => (
-          <a class="post-row" href={`/posts/${post.id}`}>
-            <span class="post-date">{formatYearMonth(post.data.date)}</span>
-            <div class="post-center">
-              <div class="post-title">{post.data.title}</div>
-              <div class="post-tag">{post.data.tags?.[0]}</div>
-            </div>
-            <span class="post-arrow">→</span>
-          </a>
-        ))}
+        {recent.map(post => {
+          const excerpt = post.data.description || getExcerpt(post.body ?? '');
+          const minutes = getReadingMinutes(post.body ?? '');
+          return (
+            <a class="post-row" href={`/posts/${post.id}`}>
+              <div class="post-date-col">
+                <div class="post-date-cn">{formatFullDateCN(post.data.date)}</div>
+                <div class="post-date-en">{formatDateEn(post.data.date)}</div>
+              </div>
+              <div class="post-center">
+                <div class="post-title">{post.data.title}</div>
+                {post.data.subtitle && <div class="post-subtitle">{post.data.subtitle}</div>}
+                {excerpt && <div class="post-lede">{excerpt}</div>}
+                <div class="post-meta">{minutes} 分钟 · 读 →</div>
+              </div>
+            </a>
+          );
+        })}
       </div>
       <div class="section-footer">
-        <a class="all-link" href="/writing">all writing →</a>
+        <a class="all-link" href="/writing">all {allPosts.length} posts →</a>
       </div>
     </div>
 
     <div class="side-col">
-      <div class="about-block">
+      <div>
         <div class="section-label">ABOUT</div>
         <div class="about-text">
           dulics@gmail.com<br/>
