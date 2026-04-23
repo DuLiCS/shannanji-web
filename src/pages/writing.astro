@@ -3,7 +3,7 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 import Footer from '../components/Footer.astro';
 import SiteNav from '../components/SiteNav.astro';
 import { getCollection } from 'astro:content';
-import { formatYearMonth } from '../utils/date';
+import { formatFullDateCN, formatDateEn } from '../utils/date';
 
 const posts = await getCollection('posts');
 const sorted = posts.sort((a, b) =>
@@ -25,6 +25,25 @@ for (const post of sorted) {
   grouped[year].push(post);
 }
 const years = Object.keys(grouped).sort((a, b) => Number(b) - Number(a));
+
+function getExcerpt(body: string, max = 95): string {
+  const first = body.split('\n')
+    .map(l => l.trim())
+    .find(l =>
+      l.length > 15 &&
+      !l.startsWith('#') && !l.startsWith('!') && !l.startsWith('>') &&
+      !l.startsWith('```') && !l.startsWith('-') && !l.startsWith('*') &&
+      !l.startsWith('|') && !l.startsWith('---')
+    );
+  if (!first) return '';
+  return first.length > max ? first.slice(0, max) + '…' : first;
+}
+
+function getReadingMinutes(body: string): number {
+  const cn = (body.match(/[\u4e00-\u9fff]/g) ?? []).length;
+  const en = (body.replace(/[\u4e00-\u9fff]/g, '').match(/\b\w+\b/g) ?? []).length;
+  return Math.max(1, Math.round(cn / 400 + en / 200));
+}
 ---
 <BaseLayout title="文章 — 山南记">
 <style>
@@ -64,16 +83,24 @@ const years = Object.keys(grouped).sort((a, b) => Number(b) - Number(a));
       <div class="year-group">
         <div class="year-bg" aria-hidden="true">{year}</div>
         <div class="year-posts">
-          {grouped[year].map(post => (
-            <a class="writing-row" href={"/posts/" + post.id} data-tags={post.data.tags?.join(",") ?? ""}>
-              <span class="writing-date">{formatYearMonth(post.data.date)}</span>
-              <div class="writing-center">
-                <div class="writing-post-title">{post.data.title}</div>
-                {post.data.subtitle && <div class="writing-subtitle">{post.data.subtitle}</div>}
-              </div>
-              <div class="writing-tag">{post.data.tags?.[0]}</div>
-            </a>
-          ))}
+          {grouped[year].map(post => {
+            const excerpt = post.data.description || getExcerpt(post.body ?? '');
+            const minutes = getReadingMinutes(post.body ?? '');
+            return (
+              <a class="writing-row" href={"/posts/" + post.id} data-tags={post.data.tags?.join(",") ?? ""}>
+                <div class="writing-date-col">
+                  <div class="writing-date-cn">{formatFullDateCN(post.data.date)}</div>
+                  <div class="writing-date-en">{formatDateEn(post.data.date)}</div>
+                </div>
+                <div class="writing-center">
+                  <div class="writing-post-title">{post.data.title}</div>
+                  {post.data.subtitle && <div class="writing-subtitle">{post.data.subtitle}</div>}
+                  {excerpt && <div class="writing-lede">{excerpt}</div>}
+                  <div class="writing-meta">{minutes} 分钟 · 读 →</div>
+                </div>
+              </a>
+            );
+          })}
         </div>
       </div>
     ))}
@@ -99,7 +126,6 @@ const years = Object.keys(grouped).sort((a, b) => Number(b) - Number(a));
         el.style.display = tags.split(",").includes(tag) ? "" : "none";
       }
     });
-    // hide year groups where all posts are filtered out
     document.querySelectorAll<HTMLElement>(".year-group").forEach(group => {
       const visible = group.querySelectorAll<HTMLElement>('.writing-row:not([style*="none"])');
       group.style.display = visible.length === 0 ? "none" : "";
